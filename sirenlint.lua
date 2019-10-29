@@ -19,12 +19,11 @@ function EMVU.AddCustomSiren(name, data)
 	print(Format("Checking %s.", name))
 
 	local id = 0
-	local tprint = function(...) return print("\t", ...) end
-	local test = function(desc, test)
+	local test = function(desc, bool)
 		id = id + 1
 		print(Format("\tTest #%d: %s", id, desc))
 
-		if test then
+		if bool then
 			print("\t\tPassed.")
 		else
 			print("\t\tFailed!")
