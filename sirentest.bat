@@ -1,0 +1,1 @@
+lua sirenlint.lua tests/siren_hazard.lua
