@@ -5,7 +5,7 @@ require("lib/shared")
 EMVU = {stored = {}}
 function EMVU.AddCustomSiren(name, data)
 	local runner = RUNNER:New()
-	runner.name = name
+	runner.name = name:Replace(" ", "_")
 
 	function runner:testID()
 		self:AssertIsNotNumeric(name)

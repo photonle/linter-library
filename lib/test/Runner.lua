@@ -9,7 +9,7 @@ end
 function RUNNER:Test()
     for tid, tname in ipairs(self.tests) do
         self.tests[tid] = TEST:New()
-        self.tests[tid].name = string.sub(tname, 5):Replace("_", " ")
+        self.tests[tid].name = self.name .. "::" .. string.sub(tname, 5):Replace("_", " ")
         self.tests[tid].Run = self[tname]
         self.tests[tid]:Test()
     end
