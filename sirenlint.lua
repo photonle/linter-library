@@ -1,51 +1,96 @@
 #!lua
 
-local files = {}
-for k, v in ipairs(arg) do
-	if k > 0 then
-		table.insert(files, v)
-	end
-end
+require("lib/shared")
 
-if #files == 0 then
-	print("No files to lint!")
-	os.exit(1)
-end
-
-dofile("shared.lua")
-
-EMVU = {}
+EMVU = {stored = {}}
 function EMVU.AddCustomSiren(name, data)
-	print(Format("Checking %s.", name))
+	local runner = RUNNER:New()
+	runner.name = name
 
-	local id = 0
-	local test = function(desc, bool)
-		id = id + 1
-		print(Format("\tTest #%d: %s", id, desc))
+	function runner:testID()
+		self:AssertIsNotNumeric(name)
+		self:AssertIsNonEmptyString(name)
+	end
 
-		if bool then
-			print("\t\tPassed.")
-		else
-			print("\t\tFailed!")
-			os.exit(1)
+	function runner:testName()
+		self:AssertIsNonEmptyString(data.Name)
+	end
+
+	function runner:testCategory()
+		self:AssertIsNonEmptyString(data.Category)
+	end
+
+	function runner:testSirenSet()
+		self:AssertIsTable(data.Set)
+		self:AssertIsNotEmpty(data.Set)
+	end
+
+	if istable(data.Set) then
+		for id, siren in ipairs(data.Set) do
+			local tid = "testSirenSet" .. id
+
+			runner[tid .. "Name"] = function(self)
+				self:AssertIsNonEmptyString(siren.Name)
+			end
+
+			runner[tid .. "Sound"] = function(self)
+				self:AssertIsNonEmptyString(siren.Sound)
+			end
+
+			runner[tid .. "Icon"] = function(self)
+				self:AssertIsNilOrString(siren.Icon)
+				if isstring(siren.Icon) then
+					self:AssertIsNonEmptyString(siren.Icon)
+				end
+			end
 		end
 	end
 
-	test("IDs must be non-numeric.", tonumber(name) == nil)
-	test("Must have a name.", isstring(data.Name))
-	test("Must have a category.", isstring(data.Category))
-	test("Must have siren set.", istable(data.Set))
-	test("Siren set must not be empty.", #data.Set > 0)
-
-	for idx, set in pairs(data.Set) do
-		test(Format("Set #%d - Must have name.", idx), isstring(set.Name))
-		test(Format("Set #%d - Must have sound.", idx), isstring(set.Sound))
-		test(Format("Set #%d - Must have icon.", idx), isstring(set.Icon))
+	function runner:testHorn()
+		self:AssertIsNilOrString(data.Horn)
 	end
 
-	test("May have horn", not data.Horn or isstring(data.Horn))
+	function runner:testManual()
+		self:AssertIsNilOrString(data.Manual)
+	end
+
+	runner:Test()
+	table.insert(EMVU.stored, runner)
 end
 
 for _, file in ipairs(files) do
 	dofile(file)
 end
+
+local failed = {}
+local succeeded = 0
+local asserts = 0
+for _, runner in ipairs(EMVU.stored) do
+	for _, test in ipairs(runner.tests) do
+		if test.success then
+			succeeded = succeeded + 1
+			asserts = asserts + test.assertions
+		else
+			table.insert(failed, string.format(
+					"Test %s :: [%s][%s]\n\t%s",
+					test.errored and "Errored" or "Failed",
+					runner.name,
+					test.name,
+					test.errored and test.error or test.message
+			))
+		end
+	end
+end
+
+local count = #failed
+local tests = succeeded + #failed
+local sirens = #EMVU.stored
+print(string.format(
+	"Stats:\n\tSirens Checked: %d\n\tTests Ran: %d\n\tTests Succeeded: %d\n\tTests Failed: %d\n\tAssertions: %d",
+	sirens, tests, succeeded, count, asserts
+))
+for _, msg in ipairs(failed) do
+	print(msg)
+end
+
+os.exit(math.min(count, 1))

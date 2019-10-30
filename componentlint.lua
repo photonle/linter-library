@@ -12,7 +12,7 @@ if #files == 0 then
     os.exit(1)
 end
 
-dofile("shared.lua")
+require("lib/shared")
 
 EMVU = {}
 function EMVU:AddAutoComponent(data, name)
