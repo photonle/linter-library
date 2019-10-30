@@ -35,6 +35,7 @@ function EMVU.AddCustomSiren(name, data)
 	test("Must have a name.", isstring(data.Name))
 	test("Must have a category.", isstring(data.Category))
 	test("Must have siren set.", istable(data.Set))
+	test("Siren set must not be empty.", #data.Set > 0)
 
 	for idx, set in pairs(data.Set) do
 		test(Format("Set #%d - Must have name.", idx), isstring(set.Name))
