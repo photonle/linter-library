@@ -1,4 +1,11 @@
 Format = string.format
+function AddCSLuaFile() end
+function Vector(x, y, z)
+	return {x = x, y = y, z = z}
+end
+function Angle(p, y, r)
+	return {p = p, y = y, r = r}
+end
 
 function curry(func, ...)
 	local args = {...}
@@ -17,3 +24,5 @@ end
 function istype(rType, var) return type(var) == rType end
 istable = curry(istype, "table")
 isstring = curry(istype, "string")
+isnumber = curry(istype, "number")
+isnumeric = function(val, base) return tonumber(val, base) ~= nil  end
