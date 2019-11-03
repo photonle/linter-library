@@ -100,7 +100,6 @@ function setupDual(onto, failure, func)
 end
 
 local setup = curry(setupDual, TEST)
-
 setup("true", function(v) return v == true end)
 setup("false", function(v) return v == false end)
 setup("truthy", function(v) return v end)
