@@ -14,35 +14,42 @@ end
 
 require("lib/shared")
 
-EMVU = {}
+EMVU = {stored = {}}
 function EMVU:AddAutoComponent(data, name)
-    print(Format("Checking %s.", name))
+    local runner = RUNNER:New()
+    runner.name = name:Replace(" ", "_")
 
-    local id = 0
-    local test = function(desc, bool)
-        id = id + 1
-        print(Format("\tTest #%d: %s", id, desc))
+    function runner:testName()
+        self:AssertIsNotNumeric(name)
+        self:AssertIsNonEmptyString(name)
+    end
 
-        if bool then
-            print("\t\tPassed.")
-        else
-            print("\t\tFailed!")
-            os.exit(1)
+    function runner:testModel()
+        self:AssertIsNilOrString(data.Model)
+        if data.Model then
+            self:AssertIsNonEmptyString(data.Model)
+            self:AssertIsNotNumeric(data.Model)
+            self:Assert(data.Model:sub(1, 7) == "models/", self:_assertMessage(data.Model, "in the models/ directory"))
         end
     end
 
-    test("Name must be present.", name)
-    test("Name must be a string.", isstring(name))
-    test("Name must be non-numeric.", tonumber(name) == nil)
+    function runner:testSkin()
+        self:AssertIsNilOrNumber(data.Skin)
+    end
 
-    test("Model must NOT be present OR be string", data.Model == nil or isstring(data.Model))
-    test("Skin must NOT be present OR be number", data.Skin == nil or isnumber(data.Skin))
-
-    test("Bodygroups must NOT be present OR be table", data.Bodygroups == nil or istable(data.Bodygroups))
-    if data.Bodygroups then
-        for bgid, bgval in ipairs(data.Bodygroups) do
-            test("Bodygroup key must be numeric.", isnumber(bgid))
-            test("Bodygroup value must be numeric.", isnumber(bgval))
+    function runner:testBodygroups()
+        self:AssertIsNilOrTable(data.Bodygroups)
+        if data.Bodygroups then
+            for bgid, bgval in ipairs(data.Bodygroups) do
+                self:AssertIsNumeric(bgid, self:_assertMessage(
+                    string.format("bodygroup key ('%s')", tostring(bgid)),
+                    "is numeric"
+                ))
+                self:AssertIsNumeric(bgval, self:_assertMessage(
+                    string.format("bodygroup value ('%s')", tostring(bgid)),
+                    "is numeric"
+                ))
+            end
         end
     end
 end
