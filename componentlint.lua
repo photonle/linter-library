@@ -40,7 +40,10 @@ function EMVU:AddAutoComponent(data, name)
     function runner:testBodygroups()
         self:AssertIsNilOrTable(data.Bodygroups)
         if data.Bodygroups then
-            for bgid, bgval in ipairs(data.Bodygroups) do
+            for id, bgdata in ipairs(data.Bodygroups) do
+                self:AssertIsTable(bgdata)
+
+                local bgid, bgval = bgdata[1], bgdata[2]
                 self:AssertIsNumeric(bgid, self:_assertMessage(
                     string.format("bodygroup key ('%s')", tostring(bgid)),
                     "numeric"
