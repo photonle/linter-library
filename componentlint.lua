@@ -43,11 +43,11 @@ function EMVU:AddAutoComponent(data, name)
             for bgid, bgval in ipairs(data.Bodygroups) do
                 self:AssertIsNumeric(bgid, self:_assertMessage(
                     string.format("bodygroup key ('%s')", tostring(bgid)),
-                    "is numeric"
+                    "numeric"
                 ))
                 self:AssertIsNumeric(bgval, self:_assertMessage(
                     string.format("bodygroup value ('%s')", tostring(bgid)),
-                    "is numeric"
+                    "numeric"
                 ))
             end
         end
