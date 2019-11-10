@@ -69,3 +69,24 @@ function string.Replace( str, tofind, toreplace )
     if ( tbl[ 1 ] ) then return table.concat( tbl, toreplace ) end
     return str
 end
+
+--- Copied from Garry's Mod GitHub.
+-- Adaptations by Internet.
+-- https://github.com/Facepunch/garrysmod/blob/master/garrysmod/lua/includes/extensions/table.lua#L24
+-- @tab t Table to copy from.
+-- @tab lookup_table Lookup array of already copied tables.
+function table.Copy(t, lookup_table)
+    if t == nil then return nil end
+    lookup_table = lookup_table or {}
+
+    local copy = setmetatable({}, getmetatable(t))
+    for k, v in pairs(t) do
+        if istable(v) then
+            lookup_table[t] = copy
+            copy[k] = lookup_table[v] or table.Copy(v, lookup_table)
+        else
+            copy[k] = v
+        end
+    end
+    return copy
+end
