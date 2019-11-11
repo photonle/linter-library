@@ -90,3 +90,24 @@ function table.Copy(t, lookup_table)
     end
     return copy
 end
+
+local strsub = string.sub
+local strlen = string.len
+
+--- Check if a string starts with another string.
+-- @see https://github.com/Facepunch/garrysmod/blob/master/garrysmod/lua/includes/extensions/string.lua#L301
+-- @string str String to check.
+-- @string start Substring to check against.
+-- @treturn boolean If str begins with start.
+function string.StartWith(str, start)
+    return strsub(str, 1, strlen(start)) == start
+end
+
+--- Check if a string ends with another string.
+-- @see https://github.com/Facepunch/garrysmod/blob/master/garrysmod/lua/includes/extensions/string.lua#L307
+-- @string str String to check.
+-- @string start Substring to check against.
+-- @treturn boolean If str begins with start.
+function string.EndsWith(str, ends)
+    return ends == "" or sub(str, -len(ends)) == ends
+end
