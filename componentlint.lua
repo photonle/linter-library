@@ -60,8 +60,12 @@ function EMVU:AddAutoComponent(data, name)
     table.insert(self.stored, runner)
 end
 
+local badFiles = {}
 for _, file in ipairs(files) do
-    dofile(file)
+    local success, msg = pcall(dofile, file)
+    if not success then
+        table.insert(badFiles, {file, msg})
+    end
 end
 
 local failed = {}
@@ -75,22 +79,25 @@ for _, runner in ipairs(EMVU.stored) do
         else
             print(test)
             table.insert(failed, string.format(
-                    "Test %s :: [%s][%s]\n\t%s",
-                    test.errored and "Errored" or "Failed",
-                    runner.name,
-                    test.name,
-                    test.errored and test.error or test.message
+                "Test %s :: [%s][%s]\n\t%s",
+                test.errored and "Errored" or "Failed",
+                runner.name,
+                test.name,
+                test.errored and test.error or test.message
             ))
         end
     end
+end
+for _, file in ipairs(badFiles) do
+    print("Error whilst loading " .. file[1] .. "\n\t" .. file[2])
 end
 
 local count = #failed
 local tests = succeeded + #failed
 local sirens = #EMVU.stored
 print(string.format(
-        "Stats:\n\tComponents Checked: %d\n\tTests Ran: %d\n\tTests Succeeded: %d\n\tTests Failed: %d\n\tAssertions: %d",
-        sirens, tests, succeeded, count, asserts
+        "Stats:\n\tFiles Failed: %d\n\tComponents Checked: %d\n\tTests Ran: %d\n\tTests Succeeded: %d\n\tTests Failed: %d\n\tAssertions: %d",
+        #badFiles, sirens, tests, succeeded, count, asserts
 ))
 for _, msg in ipairs(failed) do
     print(msg)
