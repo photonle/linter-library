@@ -127,3 +127,20 @@ function table.Add(dest, source)
 
 	return dest
 end
+
+--- Returns a reversed table.
+-- @see https://github.com/Facepunch/garrysmod/blob/master/garrysmod/lua/includes/extensions/table.lua#L667
+-- @table tbl Source table.
+-- @treturn table Reversed table.
+function table.Reverse( tbl )
+
+	local len = #tbl
+	local ret = {}
+
+	for i = len, 1, -1 do
+		ret[ len - i + 1 ] = tbl[ i ]
+	end
+
+	return ret
+
+end
