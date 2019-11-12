@@ -111,3 +111,19 @@ end
 function string.EndsWith(str, ends)
     return ends == "" or sub(str, -len(ends)) == ends
 end
+
+--- Add the contents of two tables together.
+-- @see https://github.com/Facepunch/garrysmod/blob/master/garrysmod/lua/includes/extensions/table.lua#L112
+-- @table dest Destination table.
+-- @table source Source table.
+-- @treturn table Combined table.
+function table.Add(dest, source)
+	if not istable(source) then return dest end
+	if not istable(dest) then dest = {} end
+
+	for k, v in pairs(source) do
+		table.insert(dest, v)
+	end
+
+	return dest
+end
