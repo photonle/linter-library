@@ -15,7 +15,7 @@ end
 require("lib/shared")
 
 EMVU = {stored = {}}
-function EMVU:AddAutoComponent(data, name)
+function EMVU.AddAutoComponent(emvu, data, name)
     local runner = RUNNER:New()
     runner.name = name:Replace(" ", "_")
 
@@ -80,8 +80,22 @@ function EMVU:AddAutoComponent(data, name)
         end
     end
 
+    if data.Meta then
+        for id, meta in pairs(data.Meta) do
+            runner["testMeta" .. id] = function(self)
+                self:AssertIsNumber(meta.AngleOffset)
+                self:AssertIsNumber(meta.W)
+                self:AssertIsNumber(meta.H)
+
+                self:AssertIsString(meta.Sprite)
+                self:AssertIsNilOrNumber(meta.WMult)
+                self:AssertIsNilOrNumber(meta.Scale)
+            end
+        end
+    end
+
     runner:Test()
-    table.insert(self.stored, runner)
+    table.insert(emvu.stored, runner)
 end
 
 local badFiles = {}
