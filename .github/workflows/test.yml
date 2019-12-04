@@ -17,9 +17,7 @@ jobs:
       -
         name: Install Lua from Cache
         if: steps.cache-lua.outputs.cache-hit == 'true'
-        run: |
-          ls -l ~/work/linter-library/linter-library/.lua
-          export PATH=~/work/linter-library/linter-library/.lua/bin;$PATH
+        run: export PATH=$PATH;~/work/linter-library/linter-library/.lua/bin
       -
         name: Install Lua from Download
         if: steps.cache-lua.outputs.cache-hit != 'true'
