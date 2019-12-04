@@ -72,7 +72,7 @@ function EMVU:AddAutoComponent(data, name)
                         local lightID, col = unpack(light)
                         if col:StartWith("_") then
                             local colId = tonumber(col:sub(1))
-                            self:AssertIsString(data.DefaultColors[colId], string.format("default color '%s' exists", col))
+                            self:AssertIsString(data.DefaultColors[colId], self:_assertMessage(string.format("default color '%s' exists", col)))
                         end
                     end
                 end
