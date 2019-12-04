@@ -16,4 +16,4 @@ jobs:
       -
         name: Lint
         run: |
-          lua sirenlint.lua tests/auto_*
+          lua componentlint.lua tests/auto_*
