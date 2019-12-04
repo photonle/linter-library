@@ -56,6 +56,30 @@ function EMVU:AddAutoComponent(data, name)
         end
     end
 
+    function runner:testColorInput()
+        self:AssertIsNilOrTable(data.DefaultColors)
+        if data.DefaultColors then
+            for id, color in pairs(data.DefaultColors) do
+                self:AssertIsNumeric(id)
+                self:AssertIsString(color)
+            end
+        end
+
+        if data.Sections then
+            for sectionID, sectionData in pairs(data.Sections) do
+                for frameID, lights in ipairs(sectionData) do
+                    for lightIdx, light in ipairs(lights) do
+                        local lightID, col = unpack(light)
+                        if col:StartWith("_") then
+                            local colId = tonumber(col:sub(1))
+                            self:AssertIsString(data.DefaultColors[colId], string.format("default color '%s' exists", col))
+                        end
+                    end
+                end
+            end
+        end
+    end
+
     runner:Test()
     table.insert(self.stored, runner)
 end
