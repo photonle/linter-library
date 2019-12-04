@@ -71,7 +71,7 @@ function EMVU:AddAutoComponent(data, name)
                     for lightIdx, light in ipairs(lights) do
                         local lightID, col = unpack(light)
                         if col:StartWith("_") then
-                            local colId = tonumber(col:sub(1))
+                            local colId = tonumber(col:sub(2))
                             self:AssertIsString(data.DefaultColors[colId], self:_assertMessage(string.format("default color ('%s' / %s)", col, colId), "string"))
                         end
                     end
