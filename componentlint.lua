@@ -83,7 +83,12 @@ function EMVU.AddAutoComponent(emvu, data, name)
     if data.Meta then
         for id, meta in pairs(data.Meta) do
             runner["testMeta" .. id] = function(self)
-                self:AssertIsNumber(meta.AngleOffset)
+                if isstring(meta.AngleOffset) then
+                    self:Assert(meta.AngleOffset == "R", self:_assertMessage(meta.AngleOffset, "R"))
+                else
+                    self:AssertIsNumber(meta.AngleOffset)
+                end
+
                 self:AssertIsNumber(meta.W)
                 self:AssertIsNumber(meta.H)
 
