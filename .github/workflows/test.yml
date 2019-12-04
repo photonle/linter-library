@@ -1,0 +1,19 @@
+name: Test
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v1
+      -
+        name: Install Lua
+        uses: leafo/gh-actions-lua@v3
+        with:
+          luaVersion: "5.2"
+      -
+        name: Lint
+        run: |
+          lua sirenlint.lua tests/auto_*
