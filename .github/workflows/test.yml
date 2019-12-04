@@ -18,7 +18,7 @@ jobs:
         name: Install Lua from Cache
         if: steps.cache-lua.outputs.cache-hit == 'true'
         run: |
-          ls -l ~
+          ls -l ~/work
           export PATH=.lua/bin/lua;$PATH
       -
         name: Install Lua from Download
